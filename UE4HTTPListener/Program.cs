@@ -10,14 +10,17 @@ namespace UE4HTTPListener
     class Program
     {
         private static readonly HttpListener listener = new HttpListener();
+        private static readonly int port = 80;
         static void Main(string[] args)
         {
 
-            listener.Prefixes.Add("http://+:80/");
+            listener.Prefixes.Add("http://+:" + port +"/");
             listener.Start();
             Listen();
-            Console.WriteLine("Listening...");
+            Console.WriteLine("-----------------------------------");
+            Console.WriteLine("Listening on port " + port + "...");
             Console.WriteLine("Press any key to exit...");
+            Console.WriteLine("-----------------------------------");
             Console.ReadKey();
 
         }
@@ -29,6 +32,7 @@ namespace UE4HTTPListener
             {
                 var context = await listener.GetContextAsync();
                 Console.WriteLine("Client connected");
+                Console.WriteLine("Proccessing Request");
                 await Task.Factory.StartNew(() => ProcessRequest(context));
             }
 
@@ -39,14 +43,16 @@ namespace UE4HTTPListener
         private static void ProcessRequest(HttpListenerContext context)
         {
             System.Threading.Thread.Sleep(10 * 1000);
-            Console.WriteLine("Generating Response");
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;
             string responseString = "<html><body>" + returnConnectionInfo() + "</body></html>";
+            Console.WriteLine("Connection String Received");
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
             response.ContentLength64 = buffer.Length;
             System.IO.Stream output = response.OutputStream;
+            Console.WriteLine("Sending Response...");
             output.Write(buffer, 0, buffer.Length);
+            Console.WriteLine("Response Sent!");
             output.Close();
         }
 
