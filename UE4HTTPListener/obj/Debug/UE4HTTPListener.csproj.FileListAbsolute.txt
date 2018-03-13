@@ -1,0 +1,7 @@
+C:\Users\Samuel Heinicke\source\repos\UE4HTTPListener\UE4HTTPListener\bin\Debug\UE4HTTPListener.exe.config
+C:\Users\Samuel Heinicke\source\repos\UE4HTTPListener\UE4HTTPListener\bin\Debug\UE4HTTPListener.exe
+C:\Users\Samuel Heinicke\source\repos\UE4HTTPListener\UE4HTTPListener\bin\Debug\UE4HTTPListener.pdb
+C:\Users\Samuel Heinicke\source\repos\UE4HTTPListener\UE4HTTPListener\obj\Debug\UE4HTTPListener.csproj.CoreCompileInputs.cache
+C:\Users\Samuel Heinicke\source\repos\UE4HTTPListener\UE4HTTPListener\obj\Debug\UE4HTTPListener.exe
+C:\Users\Samuel Heinicke\source\repos\UE4HTTPListener\UE4HTTPListener\obj\Debug\UE4HTTPListener.pdb
+C:\Users\Samuel Heinicke\source\repos\UE4HTTPListener\UE4HTTPListener\obj\Debug\UE4HTTPListener.csprojResolveAssemblyReference.cache
