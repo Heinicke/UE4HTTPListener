@@ -12,3 +12,5 @@ C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\De
 C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\Debug\UE4HTTPListener.csproj.CoreCompileInputs.cache
 C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\Debug\UE4HTTPListener.exe
 C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\Debug\UE4HTTPListener.pdb
+C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\Debug\UE4HTTPListener.AdminPanel.resources
+C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\Debug\UE4HTTPListener.csproj.GenerateResource.Cache

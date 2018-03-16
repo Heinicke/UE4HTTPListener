@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace UE4HTTPListener
 {
@@ -11,6 +12,8 @@ namespace UE4HTTPListener
     {
         private static readonly HttpListener listener = new HttpListener();
         private static readonly int port = 80;
+        private static string currentDirectory = Directory.GetCurrentDirectory();
+        private static Dictionary<string, string> ServerList = new Dictionary<string, string>();
         static void Main(string[] args)
         {
 
@@ -18,8 +21,11 @@ namespace UE4HTTPListener
             listener.Start();
             Listen();
             Console.WriteLine("-----------------------------------");
-            Console.WriteLine("Listening on port " + port + "...");
-            Console.WriteLine("Press any key to exit...");
+            Console.WriteLine("Server Public IP Address: {0}", GetPublicIPAddress());
+            Console.WriteLine("Listening on port {0}", port);
+            Console.WriteLine("Current Directory: {0}", currentDirectory);
+            //Console.WriteLine("Admin Panel Initilzaed: {0}", showAdminPanel());
+            Console.WriteLine("Intilized. Press any key to exit...");
             Console.WriteLine("-----------------------------------");
             Console.ReadKey();
 
@@ -31,7 +37,8 @@ namespace UE4HTTPListener
             while (listen)
             {
                 var context = await listener.GetContextAsync();
-                Console.WriteLine("Client connected");
+                DateTime timestamp = DateTime.Today;
+                Console.WriteLine("Client connected at " + timestamp.ToString());
                 Console.WriteLine("Proccessing Request");
                 await Task.Factory.StartNew(() => ProcessRequest(context));
             }
@@ -45,8 +52,8 @@ namespace UE4HTTPListener
             System.Threading.Thread.Sleep(10 * 1000);
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;
-            string responseString = "<html><body>" + returnConnectionInfo() + "</body></html>";
-            Console.WriteLine("Connection String Received");
+            string responseString = returnConnectionInfo();
+            Console.WriteLine("Connection String Received - " + responseString);
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
             response.ContentLength64 = buffer.Length;
             System.IO.Stream output = response.OutputStream;
@@ -66,6 +73,41 @@ namespace UE4HTTPListener
             string connectionInfo = string.Concat(address,":", port);
 
             return connectionInfo;
+        }
+
+        private static string GetPublicIPAddress()
+        {
+            String address = "";
+            WebRequest request = WebRequest.Create("http://checkip.dyndns.org/");
+            using (WebResponse response = request.GetResponse())
+            using (StreamReader stream = new StreamReader(response.GetResponseStream()))
+            {
+                address = stream.ReadToEnd();
+            }
+
+            int first = address.IndexOf("Address: ") + 9;
+            int last = address.LastIndexOf("</body>");
+            address = address.Substring(first, last - first);
+
+            return address;
+        }
+
+        private static void intilizeServerInstance()
+        {
+            UEServer server = new UEServer();
+        }
+
+        public void registerServer(string address, string port)
+        {
+            ServerList.Add(port, address);
+        }
+
+        private static bool showAdminPanel()
+        {
+            AdminPanel adminpanel = new AdminPanel();
+            adminpanel.Show();
+
+            return true;
         }
     }
 }
