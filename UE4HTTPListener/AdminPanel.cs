@@ -19,25 +19,16 @@ namespace UE4HTTPListener
 
         private void AdminPanel_Load(object sender, EventArgs e)
         {
-            //Dummy Values for Testing
-            /*
-            Program.registerServer("127.0.0.1", "7777");
-            Program.registerServer("127.0.0.1", "7778");
-            Program.registerServer("127.0.0.1", "7779");
-            Program.registerServer("127.0.0.1", "7780");
-            Program.registerServer("127.0.0.1", "7781");
             BuildServerList();
-            //Program.removeServer("7777");
-            //Program.removeServer("7781");
-            */
-
-            BuildServerList();
+            BuildMMList();
         }
 
         public void refreshServerList()
         {
             serverList_panel1.Controls.Clear();
+            mmList_panel.Controls.Clear();
             BuildServerList();
+            BuildMMList();
         }
 
         private void BuildServerList()
@@ -45,11 +36,32 @@ namespace UE4HTTPListener
             serverList_panel1.Controls.Clear();
             foreach (KeyValuePair<string, string> server in Program.GetServerList())
             {
-                CheckBox chb = new CheckBox();
-                chb.Text = server.Value + ":" + server.Key;
-                chb.Location = new Point(10, serverList_panel1.Controls.Count * 25);
+                TextBox txtB = new TextBox();
+                txtB.ReadOnly = true;
+                txtB.Text = server.Value + ":" + server.Key;
+                txtB.Location = new Point(10, serverList_panel1.Controls.Count * 25);
+                Size size = TextRenderer.MeasureText(txtB.Text, txtB.Font);
+                txtB.Width = size.Width;
+                txtB.Height = size.Height;
 
-                serverList_panel1.Controls.Add(chb);
+                serverList_panel1.Controls.Add(txtB);
+            }
+        }
+
+        private void BuildMMList()
+        {
+            mmList_panel.Controls.Clear();
+            foreach (KeyValuePair<string, string> mmserver in Program.GetMMServerList())
+            {
+                TextBox txtB = new TextBox();
+                txtB.ReadOnly = true;
+                txtB.Text = "ID: " + mmserver.Key + " | Port: " + mmserver.Value;
+                txtB.Location = new Point(10, mmList_panel.Controls.Count * 25);
+                Size size = TextRenderer.MeasureText(txtB.Text, txtB.Font);
+                txtB.Width = size.Width;
+                txtB.Height = size.Height;
+
+                mmList_panel.Controls.Add(txtB);
             }
         }
 

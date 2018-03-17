@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
+using System.Collections.Specialized;
 
 namespace UE4HTTPListener
 {
@@ -13,8 +14,17 @@ namespace UE4HTTPListener
     {
         private static readonly HttpListener listener = new HttpListener();
         private static readonly int port = 80;
+        private static readonly int serverStartingPort = 7777;
+        private static readonly int serverMaxPort = 7800;
         private static string currentDirectory = Directory.GetCurrentDirectory();
+
+        //Header Value Names
+        private static readonly string matchMakingIDString = "matchId";
+
+        //Server List. Key: Port / Value: Address
+        //MMList       Key: ID   / Value: Port
         private static Dictionary<string, string> ServerList = new Dictionary<string, string>();
+        private static Dictionary<string, string> MMList = new Dictionary<string, string>();
         [STAThread]
         static void Main(string[] args)
         {
@@ -54,26 +64,65 @@ namespace UE4HTTPListener
             System.Threading.Thread.Sleep(10 * 1000);
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;
-            string responseString = returnConnectionInfo();
-            Console.WriteLine("Connection String Received - " + responseString);
-            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
-            response.ContentLength64 = buffer.Length;
-            System.IO.Stream output = response.OutputStream;
-            Console.WriteLine("Sending Response...");
-            output.Write(buffer, 0, buffer.Length);
-            Console.WriteLine("Response Sent!");
-            output.Close();
+            NameValueCollection headers = request.Headers;
+
+            if(headers.Get(matchMakingIDString) == null)
+            {
+                Console.WriteLine("Connection Refused - Header {0} not set!", matchMakingIDString);
+            }
+            else
+            {
+                string matchmakingID = headers.Get(matchMakingIDString);
+
+                if(IsSameMMRequest(matchmakingID))
+                {
+                    Console.WriteLine("Same Matchmaking Request - Retrieving connection info");
+                    string responseString = returnConnectionInfo(matchmakingID, false);
+                    Console.WriteLine("Connection String Received - " + responseString);
+                    byte[] buffer = Encoding.UTF8.GetBytes(responseString);
+                    response.ContentLength64 = buffer.Length;
+                    Stream output = response.OutputStream;
+                    Console.WriteLine("Sending Response...");
+                    output.Write(buffer, 0, buffer.Length);
+                    Console.WriteLine("Response Sent!");
+                    output.Close();
+
+                }
+                else
+                {
+                    Console.WriteLine("Matchmaking Code - {0}", matchmakingID);
+                    string responseString = returnConnectionInfo(matchmakingID, true);
+                    Console.WriteLine("Connection String Received - " + responseString);
+                    byte[] buffer = Encoding.UTF8.GetBytes(responseString);
+                    response.ContentLength64 = buffer.Length;
+                    Stream output = response.OutputStream;
+                    Console.WriteLine("Sending Response...");
+                    output.Write(buffer, 0, buffer.Length);
+                    Console.WriteLine("Response Sent!");
+                    output.Close();
+                }
+
+            }
         }
 
-        private static string returnConnectionInfo()
+        private static string returnConnectionInfo(string MatchMakingID, bool NewRequest)
         {
-            string address = "127.0.0.1";
-            string port = "7777";
+            string connectionInfo = "";
+            if (NewRequest)
+            {
+                connectionInfo = InitiateServer(MatchMakingID);
+            }
+            else
+            {
+                string port;
+                string address;
+                MMList.TryGetValue(MatchMakingID, out port);
+                ServerList.TryGetValue(port, out address);
 
+                connectionInfo = string.Concat(address, ":", port);
 
-
-            string connectionInfo = string.Concat(address,":", port);
-
+            }
+            
             return connectionInfo;
         }
 
@@ -94,30 +143,84 @@ namespace UE4HTTPListener
             return address;
         }
 
-        public static void registerServer(string address, string port)
+        private static bool IsSameMMRequest(string id)
         {
-            ServerList.Add(port, address);
-            //AdminPanel.refreshServerList();
-            var adminPanelForm = Application.OpenForms.OfType<AdminPanel>().Single();
-            adminPanelForm.refreshServerList();
+
+            return MMList.ContainsKey(id);
+        }
+        private static void registerServer(string address, string port)
+        {
+            if(!ServerList.ContainsKey(port))
+            {
+                ServerList.Add(port, address);
+            }
+
+            //var adminPanelForm = Application.OpenForms.OfType<AdminPanel>().Single();
+            //adminPanelForm.refreshServerList();
         }
 
-        public static void removeServer(string port)
+        private static void registerMMServer(string id, string port)
+        {
+            if (!MMList.ContainsKey(id))
+            {
+                MMList.Add(id, port);
+            }
+
+            //var adminPanelForm = Application.OpenForms.OfType<AdminPanel>().Single();
+            //adminPanelForm.refreshServerList();
+        }
+
+        private static void removeServer(string port)
         {
             ServerList.Remove(port);
-            //AdminPanel.refreshServerList();
+        }
+
+        private static void removeMMServer(string id)
+        {
+            MMList.Remove(id);
+        }
+
+        public static string FindAvaiblePort()
+        {
+            int foundport = serverStartingPort;
+            if (!ServerList.ContainsKey(serverStartingPort.ToString()))
+            {
+                foundport = serverStartingPort;
+            }
+            else
+            {
+                while(ServerList.ContainsKey(foundport.ToString()) && foundport <= serverMaxPort)
+                {
+                    foundport++;
+                }
+            }
+            return foundport.ToString();
+        }
+        private static string InitiateServer(string matchMakingID)
+        {
+            //Port is avaible, registers the server.
+            string foundPort = FindAvaiblePort();
+            registerServer(GetPublicIPAddress(), foundPort);
+            registerMMServer(matchMakingID, foundPort);
+            string conn = string.Concat(GetPublicIPAddress(), ":", foundPort);
+            //Start The Server Instance
+            //TODO
+
+
+            return conn;
         }
 
         public static Dictionary<string, string> GetServerList()
         {
             return ServerList;
         }
+        public static Dictionary<string, string> GetMMServerList()
+        {
+            return MMList;
+        }
 
         private static bool showAdminPanel()
         {
-            //AdminPanel adminpanel = new AdminPanel();
-            //adminpanel.Show();
-
             Application.EnableVisualStyles();
             Application.Run(new AdminPanel());
 
