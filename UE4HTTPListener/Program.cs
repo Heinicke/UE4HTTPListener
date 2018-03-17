@@ -1,4 +1,10 @@
-﻿using System;
+﻿/****************************************************\
+ * Author: Samuel Heinicke                          *
+ * This code is the sole property of the Author(s)  *
+ * Date: 3/17/2018                                  *
+ * Match Making Server for use in multiplayer games *
+\****************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -17,9 +23,11 @@ namespace UE4HTTPListener
         private static readonly int serverStartingPort = 7777;
         private static readonly int serverMaxPort = 7800;
         private static string currentDirectory = Directory.GetCurrentDirectory();
+        private static string authenticationToken = "ZBz9IGM0KHm72BTmPslbXg0kpg4Rtr2U";
 
         //Header Value Names
         private static readonly string matchMakingIDString = "matchId";
+        private static readonly string authTokenString = "authtoken";
 
         //Server List. Key: Port / Value: Address
         //MMList       Key: ID   / Value: Port
@@ -32,12 +40,16 @@ namespace UE4HTTPListener
             listener.Prefixes.Add("http://+:" + port +"/");
             listener.Start();
             Listen();
-            Console.WriteLine("-----------------------------------");
-            Console.WriteLine("Server Public IP Address: {0}", GetPublicIPAddress());
-            Console.WriteLine("Listening on port {0}", port);
-            Console.WriteLine("Current Directory: {0}", currentDirectory);
-            Console.WriteLine("Intilized. Press any key to exit...");
-            Console.WriteLine("-----------------------------------");
+            Console.WriteLine("Copyright Kreavian - Code Author: Samuel Heinicke");
+            Console.WriteLine("-------------------------------------------------");
+            Console.WriteLine("| Server Public IP Address: {0}", GetPublicIPAddress());
+            Console.WriteLine("| Listening on port {0}", port);
+            Console.WriteLine("| Server Port Range {0} - {1}", serverStartingPort, serverMaxPort);
+            Console.WriteLine("| Current Directory: {0}", currentDirectory);
+            Console.WriteLine("| Authentication Token: {0}", authenticationToken);
+            Console.WriteLine("| Headers: {0}, {1}", matchMakingIDString, authTokenString);
+            Console.WriteLine("| Unreal Engine MatchMaking Server Initilized");
+            Console.WriteLine("-------------------------------------------------");
             showAdminPanel();
             Console.ReadKey();
 
@@ -66,7 +78,11 @@ namespace UE4HTTPListener
             HttpListenerResponse response = context.Response;
             NameValueCollection headers = request.Headers;
 
-            if(headers.Get(matchMakingIDString) == null)
+            if(!(headers.Get(authTokenString) == authenticationToken))
+            {
+                Console.WriteLine("Connection Refused {0} rejected", authTokenString);
+            }
+            else if(headers.Get(matchMakingIDString) == null)
             {
                 Console.WriteLine("Connection Refused - Header {0} not set!", matchMakingIDString);
             }
