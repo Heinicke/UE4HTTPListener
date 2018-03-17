@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows.Forms;
 
 namespace UE4HTTPListener
 {
@@ -14,6 +15,7 @@ namespace UE4HTTPListener
         private static readonly int port = 80;
         private static string currentDirectory = Directory.GetCurrentDirectory();
         private static Dictionary<string, string> ServerList = new Dictionary<string, string>();
+        [STAThread]
         static void Main(string[] args)
         {
 
@@ -24,9 +26,9 @@ namespace UE4HTTPListener
             Console.WriteLine("Server Public IP Address: {0}", GetPublicIPAddress());
             Console.WriteLine("Listening on port {0}", port);
             Console.WriteLine("Current Directory: {0}", currentDirectory);
-            //Console.WriteLine("Admin Panel Initilzaed: {0}", showAdminPanel());
             Console.WriteLine("Intilized. Press any key to exit...");
             Console.WriteLine("-----------------------------------");
+            showAdminPanel();
             Console.ReadKey();
 
         }
@@ -92,20 +94,32 @@ namespace UE4HTTPListener
             return address;
         }
 
-        private static void intilizeServerInstance()
-        {
-            UEServer server = new UEServer();
-        }
-
-        public void registerServer(string address, string port)
+        public static void registerServer(string address, string port)
         {
             ServerList.Add(port, address);
+            //AdminPanel.refreshServerList();
+            var adminPanelForm = Application.OpenForms.OfType<AdminPanel>().Single();
+            adminPanelForm.refreshServerList();
+        }
+
+        public static void removeServer(string port)
+        {
+            ServerList.Remove(port);
+            //AdminPanel.refreshServerList();
+        }
+
+        public static Dictionary<string, string> GetServerList()
+        {
+            return ServerList;
         }
 
         private static bool showAdminPanel()
         {
-            AdminPanel adminpanel = new AdminPanel();
-            adminpanel.Show();
+            //AdminPanel adminpanel = new AdminPanel();
+            //adminpanel.Show();
+
+            Application.EnableVisualStyles();
+            Application.Run(new AdminPanel());
 
             return true;
         }
