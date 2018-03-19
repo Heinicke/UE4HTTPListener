@@ -13,10 +13,11 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace UE4HTTPListener
 {
-    class Program
+    class MatchMakingMaster
     {
         private static readonly HttpListener listener = new HttpListener();
         private static readonly int port = 80;
@@ -33,6 +34,7 @@ namespace UE4HTTPListener
         //MMList       Key: ID   / Value: Port
         private static Dictionary<string, string> ServerList = new Dictionary<string, string>();
         private static Dictionary<string, string> MMList = new Dictionary<string, string>();
+        private static Dictionary<int, string> serverProcessList = new Dictionary<int, string>();
         [STAThread]
         static void Main(string[] args)
         {
@@ -61,8 +63,8 @@ namespace UE4HTTPListener
             while (listen)
             {
                 var context = await listener.GetContextAsync();
-                DateTime timestamp = DateTime.Today;
-                Console.WriteLine("Client connected at " + timestamp.ToString());
+                DateTime timestamp = DateTime.Now;
+                Console.WriteLine("Client connected at " + timestamp.ToString("F"));
                 Console.WriteLine("Proccessing Request");
                 await Task.Factory.StartNew(() => ProcessRequest(context));
             }
@@ -81,10 +83,22 @@ namespace UE4HTTPListener
             if(!(headers.Get(authTokenString) == authenticationToken))
             {
                 Console.WriteLine("Connection Refused {0} rejected", authTokenString);
+                string responseString = "Connection Refused Authorization Token rejected";
+                byte[] buffer = Encoding.UTF8.GetBytes(responseString);
+                response.ContentLength64 = buffer.Length;
+                Stream output = response.OutputStream;
+                output.Write(buffer, 0, buffer.Length);
+                output.Close();
             }
             else if(headers.Get(matchMakingIDString) == null)
             {
                 Console.WriteLine("Connection Refused - Header {0} not set!", matchMakingIDString);
+                string responseString = "Connection Refused MatchMaking ID not set.";
+                byte[] buffer = Encoding.UTF8.GetBytes(responseString);
+                response.ContentLength64 = buffer.Length;
+                Stream output = response.OutputStream;
+                output.Write(buffer, 0, buffer.Length);
+                output.Close();
             }
             else
             {
@@ -186,6 +200,16 @@ namespace UE4HTTPListener
             //adminPanelForm.refreshServerList();
         }
 
+        public static void registerPID(int pid, string date)
+        {
+            serverProcessList.Add(pid, date);
+        }
+
+        public static void unregisterPID(int pid)
+        {
+            serverProcessList.Remove(pid);
+        }
+
         private static void removeServer(string port)
         {
             ServerList.Remove(port);
@@ -220,10 +244,22 @@ namespace UE4HTTPListener
             registerMMServer(matchMakingID, foundPort);
             string conn = string.Concat(GetPublicIPAddress(), ":", foundPort);
             //Start The Server Instance
-            //TODO
-
 
             return conn;
+        }
+         
+        public static void KillServerInstanceByID (int ID)
+        {
+            //CHECK IF PROCESS IS RUNNING HERE
+            Process pTOKill = Process.GetProcessById(ID);
+            if(pTOKill.ProcessName.Length != 0)
+            {
+                pTOKill.Kill();
+                unregisterPID(ID);
+
+
+            }
+
         }
 
         public static Dictionary<string, string> GetServerList()
@@ -233,6 +269,11 @@ namespace UE4HTTPListener
         public static Dictionary<string, string> GetMMServerList()
         {
             return MMList;
+        }
+
+        public static Dictionary<int, string> GetProcessList()
+        {
+            return serverProcessList;
         }
 
         private static bool showAdminPanel()

@@ -1,0 +1,8 @@
+C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\bin\Release\UE4HTTPListener.exe.config
+C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\bin\Release\UE4HTTPListener.exe
+C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\bin\Release\UE4HTTPListener.pdb
+C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\Release\UE4HTTPListener.AdminPanel.resources
+C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\Release\UE4HTTPListener.csproj.GenerateResource.Cache
+C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\Release\UE4HTTPListener.csproj.CoreCompileInputs.cache
+C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\Release\UE4HTTPListener.exe
+C:\Users\Samuel Heinicke\Documents\GitHub\UE4HTTPListener\UE4HTTPListener\obj\Release\UE4HTTPListener.pdb
