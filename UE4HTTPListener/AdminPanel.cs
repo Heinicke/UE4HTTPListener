@@ -119,23 +119,26 @@ namespace UE4HTTPListener
             if(canStart)
             {
                 ServerInstance testServer = new ServerInstance("127.0.0.1", "9999", "12345", "D:\\Troy-Heinicke\\PackagedProjects\\KreavianShooter\\Windows\\WindowsNoEditor\\KreavianShooter\\Binaries\\Win64");
-                bool started = testServer.StartServer();
+                bool started = testServer.StartServer(false);
                 Console.WriteLine("Server Started: {0} ID: {1}", started, testServer.GetProcessIdOfServer().ToString());
                 testServerPID = testServer.GetProcessIdOfServer();
+                testServerInstancebtn.Text = "Running...";
+                testServerInstancebtn.Enabled = false;
                 canStart = false;
-            }
-
-
-            
+                
+            }     
         }
 
         private void KillTestServers()
         {
-            if(testServerPID != 0)
+            if(testServerPID != 0 && killTestServer_checkBox.Checked)
             {
                 MatchMakingMaster.KillServerInstanceByID(testServerPID);
                 canStart = true;
                 testServerPID = 0;
+                testServerInstancebtn.Text = "Test Server Instance";
+                testServerInstancebtn.Enabled = true;
+                refreshServerList();
             }
         }
     }

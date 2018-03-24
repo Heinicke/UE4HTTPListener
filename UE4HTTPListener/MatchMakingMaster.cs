@@ -87,6 +87,7 @@ namespace UE4HTTPListener
                 byte[] buffer = Encoding.UTF8.GetBytes(responseString);
                 response.ContentLength64 = buffer.Length;
                 Stream output = response.OutputStream;
+                response.StatusCode = 403;
                 output.Write(buffer, 0, buffer.Length);
                 output.Close();
             }
@@ -98,6 +99,7 @@ namespace UE4HTTPListener
                 response.ContentLength64 = buffer.Length;
                 Stream output = response.OutputStream;
                 output.Write(buffer, 0, buffer.Length);
+                response.StatusCode = 400;
                 output.Close();
             }
             else
@@ -113,6 +115,7 @@ namespace UE4HTTPListener
                     response.ContentLength64 = buffer.Length;
                     Stream output = response.OutputStream;
                     Console.WriteLine("Sending Response...");
+                    response.StatusCode = 200;
                     output.Write(buffer, 0, buffer.Length);
                     Console.WriteLine("Response Sent!");
                     output.Close();
@@ -127,7 +130,9 @@ namespace UE4HTTPListener
                     response.ContentLength64 = buffer.Length;
                     Stream output = response.OutputStream;
                     Console.WriteLine("Sending Response...");
+                    response.StatusCode = 200;
                     output.Write(buffer, 0, buffer.Length);
+
                     Console.WriteLine("Response Sent!");
                     output.Close();
                 }
@@ -244,22 +249,21 @@ namespace UE4HTTPListener
             registerMMServer(matchMakingID, foundPort);
             string conn = string.Concat(GetPublicIPAddress(), ":", foundPort);
             //Start The Server Instance
+            ServerInstance serverInstance = new ServerInstance(GetPublicIPAddress(), foundPort, matchMakingID, "D:\\Troy-Heinicke\\PackagedProjects\\KreavianShooter\\Windows\\WindowsNoEditor\\KreavianShooter\\Binaries\\Win64");
+            serverInstance.StartServer(true);
 
             return conn;
         }
          
         public static void KillServerInstanceByID (int ID)
         {
-            //CHECK IF PROCESS IS RUNNING HERE
             Process pTOKill = Process.GetProcessById(ID);
             if(pTOKill.ProcessName.Length != 0)
             {
                 pTOKill.Kill();
                 unregisterPID(ID);
-
-
+                Console.WriteLine("Server Instance '" + ID + "' Terminated");
             }
-
         }
 
         public static Dictionary<string, string> GetServerList()

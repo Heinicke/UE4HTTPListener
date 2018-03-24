@@ -36,9 +36,10 @@
             this.matchMakingList = new System.Windows.Forms.GroupBox();
             this.mmList_panel = new System.Windows.Forms.Panel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.testServerInstance = new System.Windows.Forms.Button();
+            this.testServerInstancebtn = new System.Windows.Forms.Button();
             this.processList = new System.Windows.Forms.GroupBox();
             this.processList_panel1 = new System.Windows.Forms.Panel();
+            this.killTestServer_checkBox = new System.Windows.Forms.CheckBox();
             this.serverList_groupBox1.SuspendLayout();
             this.matchMakingList.SuspendLayout();
             this.processList.SuspendLayout();
@@ -101,23 +102,23 @@
             this.contextMenuStrip2.Size = new System.Drawing.Size(61, 4);
             this.contextMenuStrip2.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip2_Opening);
             // 
-            // testServerInstance
+            // testServerInstancebtn
             // 
-            this.testServerInstance.AutoSize = true;
-            this.testServerInstance.Location = new System.Drawing.Point(100, 187);
-            this.testServerInstance.Name = "testServerInstance";
-            this.testServerInstance.Size = new System.Drawing.Size(116, 23);
-            this.testServerInstance.TabIndex = 7;
-            this.testServerInstance.Text = "Test Server Instance";
-            this.testServerInstance.UseVisualStyleBackColor = true;
-            this.testServerInstance.MouseClick += new System.Windows.Forms.MouseEventHandler(this.testServerInstance_MouseClick);
+            this.testServerInstancebtn.AutoSize = true;
+            this.testServerInstancebtn.Location = new System.Drawing.Point(100, 187);
+            this.testServerInstancebtn.Name = "testServerInstancebtn";
+            this.testServerInstancebtn.Size = new System.Drawing.Size(116, 23);
+            this.testServerInstancebtn.TabIndex = 7;
+            this.testServerInstancebtn.Text = "Test Server Instance";
+            this.testServerInstancebtn.UseVisualStyleBackColor = true;
+            this.testServerInstancebtn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.testServerInstance_MouseClick);
             // 
             // processList
             // 
             this.processList.Controls.Add(this.processList_panel1);
             this.processList.Location = new System.Drawing.Point(13, 227);
             this.processList.Name = "processList";
-            this.processList.Size = new System.Drawing.Size(587, 104);
+            this.processList.Size = new System.Drawing.Size(587, 149);
             this.processList.TabIndex = 8;
             this.processList.TabStop = false;
             this.processList.Text = "Process List";
@@ -127,21 +128,35 @@
             this.processList_panel1.AutoScroll = true;
             this.processList_panel1.Location = new System.Drawing.Point(6, 19);
             this.processList_panel1.Name = "processList_panel1";
-            this.processList_panel1.Size = new System.Drawing.Size(575, 79);
+            this.processList_panel1.Size = new System.Drawing.Size(575, 124);
             this.processList_panel1.TabIndex = 0;
+            // 
+            // killTestServer_checkBox
+            // 
+            this.killTestServer_checkBox.AutoSize = true;
+            this.killTestServer_checkBox.Checked = true;
+            this.killTestServer_checkBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.killTestServer_checkBox.Location = new System.Drawing.Point(223, 192);
+            this.killTestServer_checkBox.Name = "killTestServer_checkBox";
+            this.killTestServer_checkBox.Size = new System.Drawing.Size(144, 17);
+            this.killTestServer_checkBox.TabIndex = 9;
+            this.killTestServer_checkBox.Text = "Kill Test Server (On Tick)";
+            this.killTestServer_checkBox.UseVisualStyleBackColor = true;
             // 
             // AdminPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(612, 477);
+            this.Controls.Add(this.killTestServer_checkBox);
             this.Controls.Add(this.processList);
-            this.Controls.Add(this.testServerInstance);
+            this.Controls.Add(this.testServerInstancebtn);
             this.Controls.Add(this.matchMakingList);
             this.Controls.Add(this.refreshBTN);
             this.Controls.Add(this.serverList_groupBox1);
+            this.MaximizeBox = false;
             this.Name = "AdminPanel";
-            this.Text = "AdminPanel";
+            this.Text = "AdminPanel - MatchMaking Server Master";
             this.Load += new System.EventHandler(this.AdminPanel_Load);
             this.serverList_groupBox1.ResumeLayout(false);
             this.matchMakingList.ResumeLayout(false);
@@ -160,8 +175,9 @@
         private System.Windows.Forms.GroupBox matchMakingList;
         private System.Windows.Forms.Panel mmList_panel;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
-        private System.Windows.Forms.Button testServerInstance;
+        private System.Windows.Forms.Button testServerInstancebtn;
         private System.Windows.Forms.GroupBox processList;
         private System.Windows.Forms.Panel processList_panel1;
+        private System.Windows.Forms.CheckBox killTestServer_checkBox;
     }
 }
