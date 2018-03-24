@@ -26,6 +26,8 @@ namespace UE4HTTPListener
         private static string currentDirectory = Directory.GetCurrentDirectory();
         private static string authenticationToken = "ZBz9IGM0KHm72BTmPslbXg0kpg4Rtr2U";
 
+        public static int totalServersCreated = 0;
+
         //Header Value Names
         private static readonly string matchMakingIDString = "matchId";
         private static readonly string authTokenString = "authtoken";
@@ -215,14 +217,14 @@ namespace UE4HTTPListener
             serverProcessList.Remove(pid);
         }
 
-        private static void removeServer(string port)
+        public static void removeServer(string port)
         {
             ServerList.Remove(port);
         }
 
-        private static void removeMMServer(string id)
+        public static void removeMMServer(string matchid)
         {
-            MMList.Remove(id);
+            MMList.Remove(matchid);
         }
 
         public static string FindAvaiblePort()

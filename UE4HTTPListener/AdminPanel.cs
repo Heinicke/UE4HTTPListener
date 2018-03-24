@@ -37,6 +37,10 @@ namespace UE4HTTPListener
             BuildServerList();
             BuildMMList();
             BuildProcessList();
+
+            int refreshTimer_IntervalToSeconds = refreshTimer_Interval / 1000;
+            string timerRefresh = refreshTimer_IntervalToSeconds.ToString();
+            Text = "AdminPanel - MatchMaking Master | Refresh Time " + timerRefresh + "s | Server Total: " + MatchMakingMaster.totalServersCreated;
         }
 
         private void BuildServerList()

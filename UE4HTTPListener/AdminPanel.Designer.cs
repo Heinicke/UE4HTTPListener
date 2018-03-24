@@ -156,7 +156,7 @@
             this.Controls.Add(this.serverList_groupBox1);
             this.MaximizeBox = false;
             this.Name = "AdminPanel";
-            this.Text = "AdminPanel - MatchMaking Server Master";
+            this.Text = "AdminPanel - MatchMaking Master | Refresh Time 0s | Server Total: 0";
             this.Load += new System.EventHandler(this.AdminPanel_Load);
             this.serverList_groupBox1.ResumeLayout(false);
             this.matchMakingList.ResumeLayout(false);

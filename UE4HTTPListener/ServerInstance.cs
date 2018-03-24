@@ -66,6 +66,7 @@ namespace UE4HTTPListener
                 if(IsLiveServer)
                 {
                     Console.WriteLine("Server Death Timer Started: {0} minutes", StartDeathTimer().ToString());
+                    MatchMakingMaster.totalServersCreated++;
                 }
             }
             catch(InvalidOperationException)
@@ -74,7 +75,7 @@ namespace UE4HTTPListener
             }
             catch(Exception ex)
             {
-
+                Console.WriteLine(ex.ToString());
                 started = false;
             }
 
@@ -88,6 +89,8 @@ namespace UE4HTTPListener
             {
                 pTOKill.Kill();
                 MatchMakingMaster.unregisterPID(PROCESS_ID_SERVER);
+                MatchMakingMaster.removeMMServer(MATCHMAKING_ID);
+                MatchMakingMaster.removeServer(PORT);
                 Console.WriteLine("Server Instance '" + PROCESS_ID_SERVER + "' Terminated");
             }
         }
@@ -137,7 +140,7 @@ namespace UE4HTTPListener
             double deathtime = Double.Parse(RoundTime);
             deathtime += gracePeriod;
 
-            Timer deathTimer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds);
+            Timer deathTimer = new Timer(TimeSpan.FromMinutes(deathtime).TotalMilliseconds);
             deathTimer.AutoReset = false;
             deathTimer.Elapsed += new ElapsedEventHandler(CallStopServer);
             deathTimer.Start();
@@ -147,6 +150,7 @@ namespace UE4HTTPListener
 
         private void CallStopServer(object sender, ElapsedEventArgs e)
         {
+            Console.WriteLine("Death Timer Elapsed. Stopping Server....");
             StopServer();
         }
     }
