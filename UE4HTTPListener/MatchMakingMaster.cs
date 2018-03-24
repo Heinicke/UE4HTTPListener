@@ -40,7 +40,6 @@ namespace UE4HTTPListener
         [STAThread]
         static void Main(string[] args)
         {
-
             listener.Prefixes.Add("http://+:" + port +"/");
             listener.Start();
             Listen();
@@ -66,7 +65,7 @@ namespace UE4HTTPListener
             {
                 var context = await listener.GetContextAsync();
                 DateTime timestamp = DateTime.Now;
-                Console.WriteLine("Client connected at " + timestamp.ToString("F"));
+                Console.WriteLine("Client connected on " + timestamp.ToString("F"));
                 Console.WriteLine("Proccessing Request");
                 await Task.Factory.StartNew(() => ProcessRequest(context));
             }
