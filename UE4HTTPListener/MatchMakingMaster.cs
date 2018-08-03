@@ -246,11 +246,13 @@ namespace UE4HTTPListener
         {
             //Port is avaible, registers the server.
             string foundPort = FindAvaiblePort();
-            registerServer(GetPublicIPAddress(), foundPort);
+            string address = GetPublicIPAddress();
+
+            registerServer(address, foundPort);
             registerMMServer(matchMakingID, foundPort);
-            string conn = string.Concat(GetPublicIPAddress(), ":", foundPort);
+            string conn = string.Concat(address, ":", foundPort);
             //Start The Server Instance
-            ServerInstance serverInstance = new ServerInstance(GetPublicIPAddress(), foundPort, matchMakingID, "D:\\Troy-Heinicke\\PackagedProjects\\KreavianShooter\\Windows\\WindowsNoEditor\\KreavianShooter\\Binaries\\Win64");
+            ServerInstance serverInstance = new ServerInstance(address, foundPort, matchMakingID, "D:\\Troy-Heinicke\\PackagedProjects\\KreavianShooter\\Windows\\WindowsNoEditor\\KreavianShooter\\Binaries\\Win64");
             serverInstance.StartServer(true);
 
             return conn;
